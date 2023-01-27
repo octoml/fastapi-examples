@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy as np
@@ -11,11 +12,12 @@ from servers.utils.preprocess import (
 )
 
 # Load the model
-model_path = "models/yolov5s.onnx"
-model_threadcount = 0
+model_path = os.environ.get("MODEL_PATH", "models/yolov5s.onnx")
+model_threadcount = int(os.environ.get("MODEL_INTRAOP_THREADS", "0"))
 model = ORTModel.load(model_path, intraop_thread_count=model_threadcount)
-print("Loaded model", model_path, model_threadcount, model.inputs, model.output_names)
-
+print(
+    f"Loaded model from {model_path}, intraop threads = {model_threadcount}, inputs= {model.inputs}, outputs={model.output_names}"
+)
 
 # FastAPI server setup
 app = FastAPI()
@@ -52,10 +54,11 @@ async def predict(
     result = model.session.run(model.output_names, {model_input_def.name: image_input})
     inference_duration_ns = time.perf_counter_ns() - inference_start_ns
 
-    return {
+    result = {
         "source_shape": source_img.shape,
         "model_input_shape": image_input.shape,
         "output_shape": result[0].shape,
         "preprocess_time_ms": preprocess_duration_ns / 1e6,
         "inference_time_ms": inference_duration_ns / 1e6,
     }
+    return result

@@ -1,0 +1,46 @@
+This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient)
+
+
+Server Software:        uvicorn
+Server Hostname:        localhost
+Server Port:            8000
+
+Document Path:          /predict
+Document Length:        152 bytes
+
+Concurrency Level:      16
+Time taken for tests:   21.052 seconds
+Complete requests:      1000
+Failed requests:        842
+   (Connect: 0, Receive: 0, Length: 842, Exceptions: 0)
+Total transferred:      297775 bytes
+Total body sent:        169248000
+HTML transferred:       152775 bytes
+Requests per second:    47.50 [#/sec] (mean)
+Time per request:       336.836 [ms] (mean)
+Time per request:       21.052 [ms] (mean, across all concurrent requests)
+Transfer rate:          13.81 [Kbytes/sec] received
+                        7851.01 kb/s sent
+                        7864.82 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:   183  331  94.9    322    1078
+Waiting:      182  323  80.5    321    1078
+Total:        183  331  95.0    322    1078
+
+Percentage of the requests served within a certain time (ms)
+  50%    322
+  66%    325
+  75%    326
+  80%    328
+  90%    333
+  95%    571
+  98%    662
+  99%    765
+ 100%   1078 (longest request)
