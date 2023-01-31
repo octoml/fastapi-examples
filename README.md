@@ -30,6 +30,8 @@ ab -n 1000 -c 16 -T "multipart/form-data; boundary=1234567890" -p ./requests/zid
 
 MODEL_INTRAOP_THREADS=0 gunicorn servers.yolov5:app -w 16 -k uvicorn.workers.UvicornWorker
 ab -n 1000 -c 16 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.jpg.request -e benchmarks/image/c6i4xl.r16.t0.c16.csv http://localhost:8000/predict/image > benchmarks/image/c6i4xl.r16.t0.c16.txt
+ab -n 1000 -c 16 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.ndarray.request -e benchmarks/tensor/c6i4xl.r16.t0.c16.csv http://localhost:8000/predict/tensor > benchmarks/tensor/c6i4xl.r16.t0.c16.txt
 
 MODEL_INTRAOP_THREADS=1 gunicorn servers.yolov5:app -w 16 -k uvicorn.workers.UvicornWorker
 ab -n 1000 -c 16 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.jpg.request -e benchmarks/image/c6i4xl.r16.t1.c16.csv http://localhost:8000/predict/image > benchmarks/image/c6i4xl.r16.t1.c16.txt
+ab -n 1000 -c 16 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.ndarray.request -e benchmarks/tensor/c6i4xl.r16.t1.c16.csv http://localhost:8000/predict/tensor > benchmarks/tensor/c6i4xl.r16.t1.c16.txt

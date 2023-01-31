@@ -1,0 +1,46 @@
+This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient)
+
+
+Server Software:        uvicorn
+Server Hostname:        localhost
+Server Port:            8000
+
+Document Path:          /predict/tensor
+Document Length:        107 bytes
+
+Concurrency Level:      16
+Time taken for tests:   24.952 seconds
+Complete requests:      1000
+Failed requests:        852
+   (Connect: 0, Receive: 0, Length: 852, Exceptions: 0)
+Total transferred:      252802 bytes
+Total body sent:        1229080000
+HTML transferred:       107802 bytes
+Requests per second:    40.08 [#/sec] (mean)
+Time per request:       399.234 [ms] (mean)
+Time per request:       24.952 [ms] (mean, across all concurrent requests)
+Transfer rate:          9.89 [Kbytes/sec] received
+                        48103.03 kb/s sent
+                        48112.92 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       4
+Processing:   126  396  86.8    394     752
+Waiting:      121  393  86.4    391     747
+Total:        126  396  86.8    394     752
+
+Percentage of the requests served within a certain time (ms)
+  50%    394
+  66%    429
+  75%    450
+  80%    464
+  90%    510
+  95%    549
+  98%    585
+  99%    615
+ 100%    752 (longest request)
