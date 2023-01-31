@@ -7,9 +7,9 @@ from fastapi import FastAPI, File
 
 from servers.utils.ort import ORTModel
 from servers.utils.preprocess import (
+    bytes_to_float,
     image_load,
     image_resize_letterboxed,
-    image_to_float,
 )
 
 # Load the model
@@ -44,10 +44,24 @@ def predict_image(
     )
     # HWC to CHW, BGR to RGB conversion
     target_img = target_img.transpose((2, 0, 1))[::-1]
+    target_img = np.expand_dims(target_img, axis=0)
+
+    # target_bytes = target_img.tobytes()
+    # with open("zidane.bin", "wb") as target_file:
+    #     target_file.write(target_bytes)
+
+    # with open("zidane.bin", "rb") as source_file:
+    #     source_bytes = source_file.read()
+    #     target_img = np.frombuffer(source_bytes, dtype=np.uint8)
+    #     target_img = target_img.reshape(model_input_def.shape)
+
+    # # target_img.tofile("zidane.ndarray")
+    # # target_img = np.fromfile("zidane.ndarray", dtype=np.uint8)
+    # # target_img = target_img.reshape(model_input_def.shape)
+
     # Byte to float
-    target_img = image_to_float(target_img)
+    image_input = bytes_to_float(target_img)
     # Insert batch axis
-    image_input = np.expand_dims(target_img, axis=0)
     preprocess_duration_ns = time.perf_counter_ns() - preprocess_start_ns
 
     # Run inference
@@ -72,8 +86,9 @@ def predict_tensor(
 
     # Extract and preprocess
     preprocess_start_ns = time.perf_counter_ns()
-    with BytesIO(tensor) as tensor_file:
-        image_input = np.load(tensor_file)
+    source_tensor = np.frombuffer(tensor, dtype=np.uint8)
+    source_tensor = source_tensor.reshape(model_input_def.shape)
+    image_input = bytes_to_float(source_tensor)
     preprocess_duration_ns = time.perf_counter_ns() - preprocess_start_ns
 
     # Run inference

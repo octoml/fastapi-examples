@@ -47,7 +47,7 @@ def image_resize_letterboxed(
     return image, ratio, (dw, dh)
 
 
-def image_to_float(image: np.ndarray) -> np.ndarray:
-    image_as_float = image.astype(np.float32)
-    image_as_float /= 255
-    return image_as_float
+def bytes_to_float(arr: np.ndarray) -> np.ndarray:
+    arr_as_float = arr.astype(np.float32)
+    arr_as_float /= 255
+    return arr_as_float

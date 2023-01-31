@@ -13,9 +13,9 @@ ab -n 1 -v 4 -T "multipart/form-data; boundary=1234567890" -p ./zidane.jpg.reque
 ab -n 1000 -c 8 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.jpg.request http://localhost:8000/predict/image
 
 For Tensors
-./create_ab_multipart_request.sh 1234567890 tensor zidane.npy
-ab -n 1 -v 4 -T "multipart/form-data; boundary=1234567890" -p ./zidane.npy.request http://localhost:8000/predict/tensor
-ab -n 1000 -c 8 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.npy.request http://localhost:8000/predict/tensor
+./create_ab_multipart_request.sh 1234567890 tensor zidane.ndarray
+ab -n 1 -v 4 -T "multipart/form-data; boundary=1234567890" -p ./zidane.ndarray.request http://localhost:8000/predict/tensor
+ab -n 1000 -c 8 -T "multipart/form-data; boundary=1234567890" -p ./requests/zidane.ndarray.request http://localhost:8000/predict/tensor
 
 # Single Replica Tests
 MODEL_INTRAOP_THREADS=0 uvicorn servers.yolov5:app --log-level critical
