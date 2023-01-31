@@ -1,5 +1,6 @@
 import os
 import time
+from io import BytesIO
 
 import numpy as np
 from fastapi import FastAPI, File
@@ -23,9 +24,9 @@ print(
 app = FastAPI()
 
 
-@app.post("/predict")
-async def predict(
-    image_file: bytes = File(...),
+@app.post("/predict/image")
+def predict_image(
+    image: bytes = File(...),
 ):
     model_input_def = model.inputs[0]
     expected_image_w, expected_image_h = (
@@ -36,7 +37,7 @@ async def predict(
     # Extract and preprocess
     preprocess_start_ns = time.perf_counter_ns()
     # Load image
-    source_img = image_load(image_file)
+    source_img = image_load(image)
     # Resize
     target_img, _target_ratio, _target_padding = image_resize_letterboxed(
         source_img, desired_shape=(expected_image_w, expected_image_h)
@@ -55,10 +56,35 @@ async def predict(
     inference_duration_ns = time.perf_counter_ns() - inference_start_ns
 
     result = {
-        "source_shape": source_img.shape,
-        "model_input_shape": image_input.shape,
+        "input_shape": image_input.shape,
         "output_shape": result[0].shape,
-        "preprocess_time_ms": preprocess_duration_ns / 1e6,
-        "inference_time_ms": inference_duration_ns / 1e6,
+        "preprocess_ms": preprocess_duration_ns / 1e6,
+        "inference_ms": inference_duration_ns / 1e6,
+    }
+    return result
+
+
+@app.post("/predict/tensor")
+def predict_tensor(
+    tensor: bytes = File(...),
+):
+    model_input_def = model.inputs[0]
+
+    # Extract and preprocess
+    preprocess_start_ns = time.perf_counter_ns()
+    with BytesIO(tensor) as tensor_file:
+        image_input = np.load(tensor_file)
+    preprocess_duration_ns = time.perf_counter_ns() - preprocess_start_ns
+
+    # Run inference
+    inference_start_ns = time.perf_counter_ns()
+    result = model.session.run(model.output_names, {model_input_def.name: image_input})
+    inference_duration_ns = time.perf_counter_ns() - inference_start_ns
+
+    result = {
+        "input_shape": image_input.shape,
+        "output_shape": result[0].shape,
+        "preprocess_ms": preprocess_duration_ns / 1e6,
+        "inference_ms": inference_duration_ns / 1e6,
     }
     return result
