@@ -1,4 +1,9 @@
-# Example cURL and Apache Bench commands
+# Server Setup
+Start via:
+```
+uvicorn servers.yolov5:app
+MODEL_EXECUTION_PROVIDER=CUDAExecutionProvider uvicorn servers.yolov5:app
+```
 
 ## Curl
 curl -v -F image=@./requests/zidane.jpg http://localhost:8000/predict/image
