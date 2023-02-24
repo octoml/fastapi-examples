@@ -41,6 +41,7 @@ class ORTModel:
         execution_provider: str = "CPUExecutionProvider",
         intraop_thread_count: int = 0,
     ) -> "ORTModel":
+
         model = onnx.load(model_path)
         session_options = ort.SessionOptions()
         session_options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
@@ -63,4 +64,23 @@ class ORTModel:
             input_defs.append(
                 ORTInputSpec(name=input_name, dtype=input_type, shape=input_dim)
             )
+
         return ORTModel(session=session, inputs=input_defs, output_names=output_names)
+
+    def forward(
+        self,
+        inputs: typing.Dict[str, np.ndarray],
+        outputs: typing.Optional[typing.Sequence[str]] = None,
+    ) -> typing.Any:
+        result = self.session.run(outputs if outputs else self.output_names, inputs)
+        return result
+
+    def random_inputs(self) -> typing.Dict[str, np.ndarray]:
+        sample = dict()
+        for input in self.inputs:
+            if np.issubdtype(input.dtype, np.integer):
+                val = np.zeros(input.shape).astype(input.dtype)
+            else:
+                val = np.random.random_sample(input.shape).astype(input.dtype)
+            sample[input.name] = val
+        return sample
